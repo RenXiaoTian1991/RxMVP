@@ -37,8 +37,6 @@ import xiaotian.ren.com.rxmvp.presenter.JokePresenter;
 import xiaotian.ren.com.rxmvp.ui.adapter.JokeAdapter;
 import xiaotian.ren.com.rxmvp.ui.view.JokeView;
 
-import static android.support.v4.content.PermissionChecker.checkSelfPermission;
-
 /**
  * Created by JDD on 2016/4/8.
  */
