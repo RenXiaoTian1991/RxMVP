@@ -42,6 +42,7 @@
         android:clickable="true"
         android:elevation="4dp"
         app:elevation="4dp"
+        android:src="@mipmap/ic_github"
         app:layout_anchor="@id/joke_refresh_layout"
         app:borderWidth="0dp"
         app:layout_anchorGravity="right|bottom"
