@@ -4,9 +4,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import butterknife.ButterKnife;
 import xiaotian.ren.com.rxmvp.presenter.BasePresenter;
-import xiaotian.ren.com.rxmvp.presenter.JokePresenter;
-import xiaotian.ren.com.rxmvp.ui.view.IBaseView;
 import xiaotian.ren.com.rxmvp.ui.view.MvpView;
 
 public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements MvpView {
@@ -16,6 +15,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
+        ButterKnife.bind(this);
+
         initPresenter();
         checkPresenterIsNull();
         mPresenter.attachView(this);

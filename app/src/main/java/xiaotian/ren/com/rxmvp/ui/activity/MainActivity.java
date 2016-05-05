@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -28,6 +29,9 @@ import xiaotian.ren.com.rxmvp.presenter.JokePresenter;
 import xiaotian.ren.com.rxmvp.ui.adapter.JokeAdapter;
 import xiaotian.ren.com.rxmvp.ui.view.JokeView;
 
+/**
+ * Created by JDD on 2016/4/8.
+ */
 public class MainActivity extends BaseActivity<JokePresenter> implements JokeView,
         SwipeRefreshLayout.OnRefreshListener, loadMoreListener {
 
