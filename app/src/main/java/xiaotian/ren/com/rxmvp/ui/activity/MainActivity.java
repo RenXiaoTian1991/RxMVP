@@ -1,7 +1,13 @@
 package xiaotian.ren.com.rxmvp.ui.activity;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -18,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import me.yokeyword.imagepicker.ImagePicker;
+import me.yokeyword.imagepicker.callback.CallbackForImagePicker;
 import rx.Observable;
 import rx.functions.Action1;
 import xiaotian.ren.com.rxmvp.R;
@@ -28,6 +36,8 @@ import xiaotian.ren.com.rxmvp.interfa.BaseData;
 import xiaotian.ren.com.rxmvp.presenter.JokePresenter;
 import xiaotian.ren.com.rxmvp.ui.adapter.JokeAdapter;
 import xiaotian.ren.com.rxmvp.ui.view.JokeView;
+
+import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
 /**
  * Created by JDD on 2016/4/8.
@@ -47,10 +57,15 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
     RelativeLayout commonError;
     @Bind(R.id.joke_refresh_layout)
     SwipeRefreshLayout jokeRefreshLayout;
+    @Bind(R.id.main_fab)
+    FloatingActionButton fab;
     private LinearLayoutManager layoutManager;
     private int page = 1;
     private List<BaseData> jokeList;
     private JokeAdapter jokeAdapter;
+    private ImagePicker imagePicker;
+    private boolean hasPermission;
+    public static final String[] WRITE_EXTERNAL_STORAGE = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,9 +77,35 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
                     public void call(Long aLong) {
                         mProgressBar.setVisibility(View.VISIBLE);
                         loadData();
+                        //请求权限
+                        requestPerm();
                     }
                 });
 
+    }
+
+    /*
+    根据版本是否大于6.0，大于再次进行权限判断，没有则进行权限请求
+     */
+    private void requestPerm() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if(this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED)
+                this.requestPermissions(WRITE_EXTERNAL_STORAGE, 2);
+            }else {
+                hasPermission = true;
+            }
+    }
+
+
+    protected void initView() {
+        imagePicker = new ImagePicker(this);
+        jokeRefreshLayout.setOnRefreshListener(this);
+        layoutManager = new LinearLayoutManager(this);
+        recordRecycleview.setLayoutManager(layoutManager);
+        recordRecycleview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration
+                .VERTICAL_LIST));
+        recordRecycleview.setLoadMoreListener(this);
     }
 
     @Override
@@ -81,15 +122,6 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
     public void hideLoading() {
         super.hideLoading();
         mProgressBar.setVisibility(View.GONE);
-    }
-
-    protected void initView() {
-        jokeRefreshLayout.setOnRefreshListener(this);
-        layoutManager = new LinearLayoutManager(this);
-        recordRecycleview.setLayoutManager(layoutManager);
-        recordRecycleview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration
-                .VERTICAL_LIST));
-        recordRecycleview.setLoadMoreListener(this);
     }
 
     protected void initData() {
@@ -114,6 +146,13 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
     @Override
     public void onLoadMore() {
         loadData();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // 委托处理
+        imagePicker.delegateActivityResult(requestCode, resultCode, data);
     }
 
     /**
@@ -149,9 +188,45 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
         onRefresh();
     }
 
+    /*
+    有权限则进行调用图库
+     */
+    @OnClick(R.id.main_fab)
+    void setFabClick(){
+        if(!hasPermission){
+            return;
+        }
+        imagePicker.openImagePiker(true, new CallbackForImagePicker() {
+            @Override
+            public void onError(Exception error) {
+
+            }
+
+            @Override
+            public void onComplete(List<String> imagePath) {
+                Log.e("abc", imagePath.size() + "");
+            }
+        });
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mPresenter.detachView();
     }
+
+    /*
+    请求权限的回调，用户授予权限则进行标志位处理
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+           hasPermission = true;
+        }else {
+            hasPermission = false;
+        }
+    }
+
 }

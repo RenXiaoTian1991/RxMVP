@@ -30,7 +30,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 
     protected abstract void initPresenter();
 
-
     protected abstract int getLayoutId();
 
     private void checkPresenterIsNull() {
