@@ -28,9 +28,6 @@ import xiaotian.ren.com.rxmvp.presenter.JokePresenter;
 import xiaotian.ren.com.rxmvp.ui.adapter.JokeAdapter;
 import xiaotian.ren.com.rxmvp.ui.view.JokeView;
 
-/**
- * Created by JDD on 2016/4/8.
- */
 public class MainActivity extends BaseActivity<JokePresenter> implements JokeView,
         SwipeRefreshLayout.OnRefreshListener, loadMoreListener {
 
@@ -55,8 +52,6 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-        initView();
-        initData();
         Observable.timer(1000, TimeUnit.MILLISECONDS)
                 .subscribe(new Action1<Long>() {
                     @Override
@@ -84,7 +79,7 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
         mProgressBar.setVisibility(View.GONE);
     }
 
-    private void initView() {
+    protected void initView() {
         jokeRefreshLayout.setOnRefreshListener(this);
         layoutManager = new LinearLayoutManager(this);
         recordRecycleview.setLayoutManager(layoutManager);
@@ -93,7 +88,7 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
         recordRecycleview.setLoadMoreListener(this);
     }
 
-    private void initData() {
+    protected void initData() {
         jokeList = new ArrayList<>();
         jokeAdapter = new JokeAdapter(jokeList);
         recordRecycleview.setAdapter(jokeAdapter);

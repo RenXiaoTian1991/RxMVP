@@ -9,9 +9,6 @@ import xiaotian.ren.com.rxmvp.presenter.JokePresenter;
 import xiaotian.ren.com.rxmvp.ui.view.IBaseView;
 import xiaotian.ren.com.rxmvp.ui.view.MvpView;
 
-/**
- * Created by JDD on 2016/4/22 0022.
- */
 public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements MvpView {
 
     protected P mPresenter;
@@ -22,7 +19,13 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         initPresenter();
         checkPresenterIsNull();
         mPresenter.attachView(this);
+        initView();
+        initData();
     }
+
+    protected abstract void initData();
+
+    protected abstract void initView();
 
     protected abstract void initPresenter();
 
