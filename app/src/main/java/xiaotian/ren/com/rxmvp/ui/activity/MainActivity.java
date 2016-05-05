@@ -36,6 +36,7 @@ import xiaotian.ren.com.rxmvp.interfa.BaseData;
 import xiaotian.ren.com.rxmvp.presenter.JokePresenter;
 import xiaotian.ren.com.rxmvp.ui.adapter.JokeAdapter;
 import xiaotian.ren.com.rxmvp.ui.view.JokeView;
+import xiaotian.ren.com.rxmvp.util.PreferenceUtils;
 
 /**
  * Created by JDD on 2016/4/8.
@@ -191,13 +192,12 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
      */
     @OnClick(R.id.main_fab)
     void setFabClick(){
-        if(!hasPermission){
+        if(!PreferenceUtils.getPrefBoolean("isPer",false)){
             return;
         }
         imagePicker.openImagePiker(true, new CallbackForImagePicker() {
             @Override
             public void onError(Exception error) {
-
             }
 
             @Override
@@ -222,8 +222,10 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
            hasPermission = true;
+           PreferenceUtils.setPrefBoolean("isPer",true);
         }else {
             hasPermission = false;
+            PreferenceUtils.setPrefBoolean("isPer",false);
         }
     }
 
