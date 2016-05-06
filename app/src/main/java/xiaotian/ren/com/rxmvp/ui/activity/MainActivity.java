@@ -3,6 +3,7 @@ package xiaotian.ren.com.rxmvp.ui.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,10 +16,12 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -35,12 +38,16 @@ import xiaotian.ren.com.rxmvp.R;
 import xiaotian.ren.com.rxmvp.common.AutoLoadRecylerView;
 import xiaotian.ren.com.rxmvp.common.AutoLoadRecylerView.loadMoreListener;
 import xiaotian.ren.com.rxmvp.common.DividerItemDecoration;
+import xiaotian.ren.com.rxmvp.init.InitApp;
 import xiaotian.ren.com.rxmvp.interfa.BaseData;
 import xiaotian.ren.com.rxmvp.presenter.JokePresenter;
 import xiaotian.ren.com.rxmvp.ui.adapter.JokeAdapter;
 import xiaotian.ren.com.rxmvp.ui.view.JokeView;
+import xiaotian.ren.com.rxmvp.util.Once;
 import xiaotian.ren.com.rxmvp.util.PreferenceUtils;
+import xiaotian.ren.com.rxmvp.util.ShareUtil;
 import xiaotian.ren.com.rxmvp.util.ToolBarHandler;
+import xiaotian.ren.com.rxmvp.util.ViewUtil;
 
 /**
  * Created by JDD on 2016/4/8.
@@ -50,6 +57,8 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
 
     @Bind(R.id.toolbar)
     Toolbar mToolBar;
+    @Bind(R.id.iv_top)
+    ImageView iv_top;
     @Bind(R.id.record_recycleview)
     AutoLoadRecylerView recordRecycleview;
     @Bind(R.id.progressbar)
@@ -87,13 +96,30 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
                         //请求权限
                         requestPerm();
                         mToolBarHandler.showToolBar(true);
+                        new Once(MainActivity.this).show(
+                                MainActivity.this.getResources().getString(R.string.once),
+                                new Once.OnceCallback() {
+                                    @Override
+                                    public void onOnce(String res) {
+                                        ViewUtil.showMsgLong(recordRecycleview, res);
+                                    }
+                                });
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
+
                     }
                 });
-
+/*
+注意此方法为整个页面都绘制出来之后才会执行的内容，对于没有闪屏页面的app来说可以将所有的耗时操作都放在这里执行
+ */
+        getWindow().getDecorView().post(new Runnable() {
+            @Override
+            public void run() {
+               new InitApp().init();
+            }
+        });
     }
 
     /*
@@ -106,7 +132,7 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
                 this.requestPermissions(WRITE_EXTERNAL_STORAGE, 2);
             }else {
                 hasPermission = true;
-                PreferenceUtils.setPrefBoolean("isPer",false);
+                PreferenceUtils.setPrefBoolean("isPer",true);
             }
     }
 
@@ -222,8 +248,19 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
             @Override
             public void onComplete(List<String> imagePath) {
                 Log.e("abc", imagePath.size() + "");
+                File file = new File(imagePath.get(0));
+                Log.e("abc", file.getAbsolutePath());
+                Uri uri = Uri.fromFile(file);
+                ShareUtil.shareImage(MainActivity.this, uri, "任晓天的笑话大全");
             }
         });
+    }
+
+    @OnClick(R.id.iv_top)
+    void setIv_top() {
+        if(jokeAdapter.getItemCount()!=0){
+            recordRecycleview.smoothScrollToPosition(0);
+        }
     }
 
     @Override
@@ -260,6 +297,10 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
 
     public FloatingActionButton getFloatBtn(){
         return fab;
+    }
+
+    public ImagePicker getImagePicker(){
+        return imagePicker;
     }
 
 }

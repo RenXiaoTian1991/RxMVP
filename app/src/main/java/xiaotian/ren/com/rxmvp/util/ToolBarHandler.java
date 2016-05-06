@@ -1,11 +1,18 @@
 package xiaotian.ren.com.rxmvp.util;
 
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 
+import java.io.File;
+import java.util.List;
+
+import me.yokeyword.imagepicker.ImagePicker;
+import me.yokeyword.imagepicker.callback.CallbackForImagePicker;
 import xiaotian.ren.com.rxmvp.R;
 import xiaotian.ren.com.rxmvp.ui.activity.MainActivity;
 import xiaotian.ren.com.rxmvp.ui.view.RotateAnimation;
@@ -39,10 +46,27 @@ public class ToolBarHandler {
                 showToolbarAnimation();
                 break;
             case R.id.action_items_like:
-                Snackbar.make(activity.getFloatBtn(),"你喜欢谁？？？",Snackbar.LENGTH_SHORT).show();
+                ViewUtil.showMsg(activity.getFloatBtn(),"你喜欢谁？？？");
                 break;
             case R.id.action_items_share:
-                ShareUtil.shareTxt(activity,"任晓天的笑话大全");
+//                ShareUtil.shareTxt(activity,"任晓天的笑话大全");
+                if(!PreferenceUtils.getPrefBoolean("isPer",false)){
+                    return;
+                }
+                activity.getImagePicker().openImagePiker(true, new CallbackForImagePicker() {
+                    @Override
+                    public void onError(Exception error) {
+                    }
+
+                    @Override
+                    public void onComplete(List<String> imagePath) {
+                        Log.e("abc", imagePath.size() + "");
+                        File file = new File(imagePath.get(0));
+                        Log.e("abc",file.getAbsolutePath());
+                        Uri uri = Uri.fromFile(file);
+                        ShareUtil.shareImage(activity,uri,"任晓天的笑话大全");
+                    }
+                });
                 break;
         }
     }
