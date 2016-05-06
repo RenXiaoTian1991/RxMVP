@@ -7,10 +7,27 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        >
+       <ImageView
+           android:background="@mipmap/mimi"
+           android:layout_gravity="center"
+           android:scaleType="center"
+           android:layout_width="48dp"
+           android:layout_height="48dp" />
+    </android.support.v7.widget.Toolbar>
+
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         >
 
         <ProgressBar

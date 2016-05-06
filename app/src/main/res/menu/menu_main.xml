@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_items_share"
+        android:icon="@mipmap/ic_share_navbar"
+        android:orderInCategory="100"
+        android:title="@string/share"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_items_like"
+        android:icon="@mipmap/ic_heart_navbar"
+        android:orderInCategory="100"
+        android:title="@string/love"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_item_more"
+        android:icon="@mipmap/ic_more_navbar"
+        android:orderInCategory="100"
+        android:title="@string/more"
+        app:showAsAction="ifRoom" />
+</menu>

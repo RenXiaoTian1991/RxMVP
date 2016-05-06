@@ -10,7 +10,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -27,6 +29,7 @@ import butterknife.OnClick;
 import me.yokeyword.imagepicker.ImagePicker;
 import me.yokeyword.imagepicker.callback.CallbackForImagePicker;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import xiaotian.ren.com.rxmvp.R;
 import xiaotian.ren.com.rxmvp.common.AutoLoadRecylerView;
@@ -37,6 +40,7 @@ import xiaotian.ren.com.rxmvp.presenter.JokePresenter;
 import xiaotian.ren.com.rxmvp.ui.adapter.JokeAdapter;
 import xiaotian.ren.com.rxmvp.ui.view.JokeView;
 import xiaotian.ren.com.rxmvp.util.PreferenceUtils;
+import xiaotian.ren.com.rxmvp.util.ToolBarHandler;
 
 /**
  * Created by JDD on 2016/4/8.
@@ -44,6 +48,8 @@ import xiaotian.ren.com.rxmvp.util.PreferenceUtils;
 public class MainActivity extends BaseActivity<JokePresenter> implements JokeView,
         SwipeRefreshLayout.OnRefreshListener, loadMoreListener {
 
+    @Bind(R.id.toolbar)
+    Toolbar mToolBar;
     @Bind(R.id.record_recycleview)
     AutoLoadRecylerView recordRecycleview;
     @Bind(R.id.progressbar)
@@ -64,6 +70,7 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
     private JokeAdapter jokeAdapter;
     private ImagePicker imagePicker;
     private boolean hasPermission;
+    private ToolBarHandler mToolBarHandler;
     public static final String[] WRITE_EXTERNAL_STORAGE = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @Override
@@ -71,6 +78,7 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         Observable.timer(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
@@ -78,6 +86,11 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
                         loadData();
                         //请求权限
                         requestPerm();
+                        mToolBarHandler.showToolBar(true);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
                     }
                 });
 
@@ -93,11 +106,13 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
                 this.requestPermissions(WRITE_EXTERNAL_STORAGE, 2);
             }else {
                 hasPermission = true;
+                PreferenceUtils.setPrefBoolean("isPer",false);
             }
     }
 
 
     protected void initView() {
+        mToolBarHandler = new ToolBarHandler(this);
         imagePicker = new ImagePicker(this);
         jokeRefreshLayout.setOnRefreshListener(this);
         layoutManager = new LinearLayoutManager(this);
@@ -105,6 +120,10 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
         recordRecycleview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration
                 .VERTICAL_LIST));
         recordRecycleview.setLoadMoreListener(this);
+        //这句一定要在setSupport之前调用，否则不起作用
+        mToolBar.setTitle("xiaotian");
+        setSupportActionBar(mToolBar);
+
     }
 
     @Override
@@ -227,6 +246,16 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
             hasPermission = false;
             PreferenceUtils.setPrefBoolean("isPer",false);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        mToolBarHandler.MenuClickListener(item);
+        return super.onOptionsItemSelected(item);
+    }
+
+    public Toolbar getToolBar(){
+        return mToolBar;
     }
 
 }
