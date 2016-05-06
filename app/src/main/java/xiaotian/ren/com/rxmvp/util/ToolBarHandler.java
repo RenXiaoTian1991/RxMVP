@@ -1,5 +1,6 @@
 package xiaotian.ren.com.rxmvp.util;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -44,13 +45,18 @@ public class ToolBarHandler {
         switch (menuItem.getItemId()){
             case R.id.action_item_more:
                 showToolbarAnimation();
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                Uri content_url = Uri.parse("https://github.com/RenXiaoTian1991/RxMVP.git");
+                intent.setData(content_url);
+                activity.startActivity(intent);
                 break;
             case R.id.action_items_like:
                 ViewUtil.showMsg(activity.getFloatBtn(),"你喜欢谁？？？");
                 break;
             case R.id.action_items_share:
 //                ShareUtil.shareTxt(activity,"任晓天的笑话大全");
-                if(!PreferenceUtils.getPrefBoolean("isPer",false)){
+                if (!PreferenceUtils.getPrefBoolean("isPer", false)) {
                     return;
                 }
                 activity.getImagePicker().openImagePiker(true, new CallbackForImagePicker() {
