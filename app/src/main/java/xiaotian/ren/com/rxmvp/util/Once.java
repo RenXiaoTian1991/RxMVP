@@ -22,9 +22,6 @@ package xiaotian.ren.com.rxmvp.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/**
- * Created by drakeet on 8/16/15.
- */
 public class Once {
 
     SharedPreferences mSharedPreferences;
@@ -40,7 +37,7 @@ public class Once {
     public void show(String tagKey, OnceCallback callback) {
         boolean isSecondTime = mSharedPreferences.getBoolean(tagKey, false);
         if (!isSecondTime) {
-            callback.onOnce();
+            callback.onOnce(tagKey);
             SharedPreferences.Editor editor = mSharedPreferences.edit();
             editor.putBoolean(tagKey, true);
             editor.apply();
@@ -54,6 +51,6 @@ public class Once {
 
 
     public interface OnceCallback {
-        void onOnce();
+        void onOnce(String res);
     }
 }
