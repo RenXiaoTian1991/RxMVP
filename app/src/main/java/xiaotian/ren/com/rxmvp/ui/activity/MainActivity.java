@@ -258,4 +258,8 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
         return mToolBar;
     }
 
+    public FloatingActionButton getFloatBtn(){
+        return fab;
+    }
+
 }

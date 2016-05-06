@@ -1,5 +1,6 @@
 package xiaotian.ren.com.rxmvp.util;
 
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,10 +39,10 @@ public class ToolBarHandler {
                 showToolbarAnimation();
                 break;
             case R.id.action_items_like:
-
+                Snackbar.make(activity.getFloatBtn(),"你喜欢谁？？？",Snackbar.LENGTH_SHORT).show();
                 break;
             case R.id.action_items_share:
-
+                ShareUtil.shareTxt(activity,"任晓天的笑话大全");
                 break;
         }
     }
