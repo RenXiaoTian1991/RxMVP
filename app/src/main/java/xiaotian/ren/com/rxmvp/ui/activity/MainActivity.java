@@ -11,9 +11,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -40,6 +42,7 @@ import xiaotian.ren.com.rxmvp.common.AutoLoadRecylerView.loadMoreListener;
 import xiaotian.ren.com.rxmvp.common.DividerItemDecoration;
 import xiaotian.ren.com.rxmvp.init.InitApp;
 import xiaotian.ren.com.rxmvp.interfa.BaseData;
+import xiaotian.ren.com.rxmvp.interfa.OnRecyclerItemClickListener;
 import xiaotian.ren.com.rxmvp.presenter.JokePresenter;
 import xiaotian.ren.com.rxmvp.ui.adapter.JokeAdapter;
 import xiaotian.ren.com.rxmvp.ui.view.JokeView;
@@ -146,6 +149,13 @@ public class MainActivity extends BaseActivity<JokePresenter> implements JokeVie
         recordRecycleview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration
                 .VERTICAL_LIST));
         recordRecycleview.setLoadMoreListener(this);
+        recordRecycleview.addOnItemTouchListener(new OnRecyclerItemClickListener(recordRecycleview) {
+            @Override
+            public void onItemClick(RecyclerView.ViewHolder vh) {
+                //item点击事件
+
+            }
+        });
         //这句一定要在setSupport之前调用，否则不起作用
         mToolBar.setTitle("xiaotian");
         setSupportActionBar(mToolBar);

@@ -18,7 +18,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         ButterKnife.bind(this);
 
         initPresenter();
-        checkPresenterIsNull();
+//        checkPresenterIsNull();
         mPresenter.attachView(this);
         initView();
         initData();

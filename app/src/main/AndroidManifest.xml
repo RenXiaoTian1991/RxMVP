@@ -22,6 +22,10 @@
         </activity>
         <activity android:name="me.yokeyword.imagepicker.ImagePickerActivity">
         </activity>">
+        <activity android:name="xiaotian.ren.com.rxmvp.ui.activity.WebActivity">
+        </activity>">
+        <activity android:name="xiaotian.ren.com.rxmvp.ui.activity.ShowWebImageActivity">
+        </activity>">
     </application>
 
 </manifest>
